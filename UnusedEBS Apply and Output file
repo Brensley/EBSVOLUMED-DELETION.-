@@ -1,0 +1,88 @@
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if you run "terraform apply" now.
+[root@ip-10-201-26-77 2032022]# terraform apply
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_cloudwatch_event_rule.UnusedEBS_trigger will be created
+  + resource "aws_cloudwatch_event_rule" "UnusedEBS_trigger" {
+      + arn                 = (known after apply)
+      + event_bus_name      = "default"
+      + id                  = (known after apply)
+      + is_enabled          = true
+      + name                = "unusedebs-lambda-trigger"
+      + name_prefix         = (known after apply)
+      + schedule_expression = "rate(7 days)"
+      + tags_all            = (known after apply)
+    }
+
+  # aws_cloudwatch_event_target.UnusedEBS_trigger will be created
+  + resource "aws_cloudwatch_event_target" "UnusedEBS_trigger" {
+      + arn            = (known after apply)
+      + event_bus_name = "default"
+      + id             = (known after apply)
+      + rule           = "unusedebs-lambda-trigger"
+      + target_id      = "lambda_function"
+    }
+
+  # aws_lambda_function.lambda_function will be created
+  + resource "aws_lambda_function" "lambda_function" {
+      + architectures                  = (known after apply)
+      + arn                            = (known after apply)
+      + description                    = "This Lambda is used to delete all Unused EBS volumes"
+      + filename                       = "UnusedEBS.zip"
+      + function_name                  = "UnsedEBS_Lambda"
+      + handler                        = "lambda_function.lambda_handler"
+      + id                             = (known after apply)
+      + invoke_arn                     = (known after apply)
+      + last_modified                  = (known after apply)
+      + memory_size                    = 128
+      + package_type                   = "Zip"
+      + publish                        = false
+      + qualified_arn                  = (known after apply)
+      + reserved_concurrent_executions = -1
+      + role                           = "arn:aws:iam::583541782477:role/uspto-dev/aws-psb-lab-lambda-role-1"
+      + runtime                        = "python3.9"
+      + signing_job_arn                = (known after apply)
+      + signing_profile_version_arn    = (known after apply)
+      + source_code_hash               = "tY57TtWNkNXo/RkDpV/5JDRrKnGRma7liUH8/G0YTX0="
+      + source_code_size               = (known after apply)
+      + tags_all                       = (known after apply)
+      + timeout                        = 60
+      + version                        = (known after apply)
+
+      + tracing_config {
+          + mode = (known after apply)
+        }
+    }
+
+  # aws_lambda_permission.allow_cloudwatch will be created
+  + resource "aws_lambda_permission" "allow_cloudwatch" {
+      + action        = "lambda:InvokeFunction"
+      + function_name = "UnsedEBS_Lambda"
+      + id            = (known after apply)
+      + principal     = "events.amazonaws.com"
+      + source_arn    = (known after apply)
+      + statement_id  = "AllowExecutionFromCloudWatch"
+    }
+
+Plan: 4 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+aws_cloudwatch_event_rule.UnusedEBS_trigger: Creating...
+aws_lambda_function.lambda_function: Creating...
+aws_cloudwatch_event_rule.UnusedEBS_trigger: Creation complete after 0s [id=unusedebs-lambda-trigger]
+aws_lambda_function.lambda_function: Creation complete after 5s [id=UnsedEBS_Lambda]
+aws_cloudwatch_event_target.UnusedEBS_trigger: Creating...
+aws_lambda_permission.allow_cloudwatch: Creating...
+aws_lambda_permission.allow_cloudwatch: Creation complete after 0s [id=AllowExecutionFromCloudWatch]
+aws_cloudwatch_event_target.UnusedEBS_trigger: Creation complete after 0s [id=unusedebs-lambda-trigger-lambda_function]
+
+Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
